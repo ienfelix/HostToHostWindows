@@ -1,0 +1,90 @@
+﻿using System;
+
+namespace Comun
+{
+    public class Constante
+    {
+        public static String CARPETA_BITACORA = "CARPETA_BITACORA";
+        public static String CARPETA_ORIGEN = "CARPETA_ORIGEN";
+        public static String CARPETA_CORRECTO = "CARPETA_CORRECTO";
+        public static String CARPETA_INCORRECTO = "CARPETA_INCORRECTO";
+        public static String CARPETA_ENCRIPTADO = "CARPETA_ENCRIPTADO";
+        public static String CARPETA_DESENCRIPTADO = "CARPETA_DESENCRIPTADO";
+        public static String NOMBRE_BITACORA = "HostToHostService";
+        public static String EXTENSION_TXT = ".txt";
+        public static String PATRON_TXT = "*.txt";
+        public static String BITACORA_NOTIFICACION = "Notificación";
+        public static String BITACORA_ERROR = "Error";
+        public static String PROYECTO_SERVICE = "Servicio";
+        public static String PROYECTO_NEGOCIO = "Negocio";
+        public static String PROYECTO_REPOSITORIO = "Repositorio";
+        public static String PROYECTO_COMUN = "Comun";
+        public static String CLASE_SERVICE_HOST_TO_HOST = "ServiceHostToHost";
+        public static String CLASE_TRAMA_NE = "TramaNE";
+        public static String CLASE_TRAMA_RE = "TramaRE";
+        public static String CLASE_UTIL = "Util";
+        public static String METODO_ON_START = "OnStart";
+        public static String METODO_ON_STOP = "OnStop";
+        public static String METODO_ON_TIMER_TRAMA = "OnTimerTrama";
+        public static String METODO_PROCESAR_TRAMA = "ProcesarTrama";
+        public static String METODO_MAPEAR_CADENA_A_MODELO = "MapearStringAModelo";
+        public static String METODO_CONVERTIR_CADENA_A_XML = "ConvertirCadenaAXml";
+        public static String METODO_MOVER_ARCHIVOS = "MoverArchivos";
+        public static String METODO_CREAR_CARPETAS_LOCALES = "CrearCarpetasLocales";
+        public static String MENSAJE_ON_TIMER_TRAMA_NO_OK = "No se procesó la trama.";
+        public static String MENSAJE_PROCESAR_TRAMA_OK = "Se procesó satisfactoriamente la trama.";
+        public static String MENSAJE_PROCESAR_TRAMA_NO_OK = "No se procesó la trama.";
+        public static String MENSAJE_CARPETA_ORIGEN_VACIA = "No hay documentos pendientes de traducir en la carpeta de origen.";
+        public static String MENSAJE_PARAMETROS_NO_PRESENTES = "Parametros no presentes en el nombre del archivo.";
+        public static String MENSAJE_CONVERTIR_CADENA_A_XML_OK = "Se convirtió satisfactoriamente la cadena a xml.";
+        public static String MENSAJE_CONVERTIR_CADENA_A_XML_NO_OK = "No se convirtió la cadena a xml.";
+        public static String MENSAJE_MAPEAR_CADENA_A_MODELO_OK = "Se mapeó satisfactoriamente la cadena a modelo.";
+        public static String MENSAJE_MAPEAR_CADENA_A_MODELO_NO_OK = "No se mapeó la cadena a modelo.";
+        public static String MENSAJE_MOVER_ARCHIVOS_OK = "Se movió satisfactoriamente el archivo procesado.";
+        public static String MENSAJE_MOVER_ARCHIVOS_NO_OK = "No se movió el archivo procesado.";
+        public static String MENSAJE_CREAR_CARPETAS_LOCALES_OK = "Se creó satisfactoriamente las carpetas locales.";
+        public static String MENSAJE_CREAR_CARPETAS_LOCALES_NO_OK = "No se creó las carpetas locales.";
+        public static String ASTERIK = "**************************************************************************************************************************";
+        public static Int32 CODIGO_OK = 10;
+        public static Int32 CODIGO_NO_OK = -10;
+        public static Int32 CODIGO_ERROR = -15;
+        public static char AMPERSON = '&';
+        public static char DOT = '.';
+        public static String BACK_SLASH = @"\";
+        public static Int32 _0 = 0;
+        public static Int32 _1 = 1;
+        public static Int32 _2 = 2;
+        public static Int32 _3 = 3;
+        public static Int32 _4 = 4;
+        public static Int32 _5 = 5;
+        public static Int32 _6 = 6;
+        public static Int32 _7 = 7;
+        public static Int32 _8 = 8;
+        public static Int32 _9 = 9;
+        public static Int32 _10 = 10;
+        public static Int32 _11 = 11;
+        public static Int32 _20 = 20;
+        public static Int32 _100 = 100;
+        public static Int32 _200 = 200;
+        public static String CONEXION_DESARROLLO = "conexionDesarrollo";
+        public static String CONEXION_PRODUCCION = "conexionProduccion";
+        public static String SPS_HTH_PROCESAR_TRAMA = "sps_hth_procesarTrama";
+        
+        public static String TRAMAS = "tramas";
+        public static String TRAMA = "trama";
+        public static String CADENA = "cadena";
+        public static String ID = "id";
+        public static String ID_BANCO = "idBanco";
+        public static String USUARIO = "usuario";
+        public static String TIPO_ORDEN = "tipoOrden";
+        public static String ID_SOCIEDAD = "idSociedad";
+        public static String ID_SAP = "idSap";
+        public static String ANIO = "anio";
+        public static String MOMENTO_ORDEN = "momentoOrden";
+        public static String NOMBRE_ARCHIVO = "nombreArchivo";
+        public static String RUTA_ARCHIVO = "rutaArchivo";
+        public static String PARAMETROS = "parametros";
+        public static String TRAMA_DETALLE = "tramaDetalle";
+        public static Int32 TIEMPO_UN_MINUTO = 60000;
+    }
+}
