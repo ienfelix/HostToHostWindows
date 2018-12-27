@@ -1,98 +1,83 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Comun
 {
     public class Bitacora
     {
-        public void RegistrarEvento(String tipo, String proyecto, String clase, String metodo, String mensaje)
+        private String _carpetaBitacora = String.Empty;
+
+        public Bitacora()
+        {
+            _carpetaBitacora = ConfigurationManager.AppSettings[Constante.CARPETA_BITACORA] ?? String.Empty;
+        }
+
+        public async Task RegistrarEventoAsync(CancellationToken cancelToken, String tipo, String proyecto, String clase, String metodo, String mensaje)
         {
             String rutaArchivo = String.Empty;
             try
             {
-                String carpetaBitacora = ConfigurationManager.AppSettings[Constante.CARPETA_BITACORA] ?? String.Empty;
                 String fecha = DateTime.Now.ToString("yyyyMMdd");
                 String nombreArchivo = String.Format("{0}_{1}{2}", Constante.NOMBRE_BITACORA, fecha, Constante.EXTENSION_TXT);
-                rutaArchivo = String.Format("{0}{1}", carpetaBitacora, nombreArchivo);
-                Boolean existeArchivo = ValidarExistenciaArchivo(rutaArchivo, nombreArchivo);
-
-                if (!existeArchivo)
-                {
-                    if (!Directory.Exists(carpetaBitacora))
-                    {
-                        Directory.CreateDirectory(carpetaBitacora);
-                    }
-
-                    File.WriteAllText(rutaArchivo, Environment.NewLine);
-                }
-
+                rutaArchivo = String.Format("{0}{1}", _carpetaBitacora, nombreArchivo);
                 fecha = String.Format("{0} {1}", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString());
                 String texto = String.Format("{0} {1} > {2} - {3} - {4} - {5}{6}", tipo, fecha, proyecto, clase, metodo, mensaje, Environment.NewLine);
-                File.AppendAllText(rutaArchivo, texto);
+
+                if (!Directory.Exists(_carpetaBitacora))
+                {
+                    Directory.CreateDirectory(_carpetaBitacora);
+                }
+
+                using (FileStream fileStream = File.Open(rutaArchivo, FileMode.Append, FileAccess.Write, FileShare.Write))
+                {
+                    Encoding ISO = Encoding.GetEncoding(Constante.ISO_8859_1);
+                    Encoding UTF8 = Encoding.UTF8;
+                    byte[] bytes = Encoding.UTF8.GetBytes(texto);
+                    byte[] isoBytes = Encoding.Convert(UTF8, ISO, bytes);
+                    await fileStream.WriteAsync(isoBytes, Constante._0, isoBytes.Length, cancelToken);
+                }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                File.WriteAllText(rutaArchivo, ex.Message);
-                throw ex;
+                File.WriteAllText(rutaArchivo, e.Message);
+                throw e;
             }
         }
 
-        public void RegistrarEvento(String tipo, String proyecto, String clase, String metodo, String mensaje, String excepcion)
+        public async Task RegistrarEventoAsync(CancellationToken cancelToken, String tipo, String proyecto, String clase, String metodo, String mensaje, String excepcion)
         {
             String rutaArchivo = String.Empty;
             try
             {
-                String carpetaBitacora = ConfigurationManager.AppSettings[Constante.CARPETA_BITACORA] ?? String.Empty;
                 String fecha = DateTime.Now.ToString("yyyyMMdd");
                 String nombreArchivo = String.Format("{0}_{1}{2}", Constante.NOMBRE_BITACORA, fecha, Constante.EXTENSION_TXT);
-                rutaArchivo = String.Format("{0}{1}", carpetaBitacora, nombreArchivo);
-                Boolean existeArchivo = ValidarExistenciaArchivo(rutaArchivo, nombreArchivo);
-
-                if (!existeArchivo)
-                {
-                    if (!Directory.Exists(carpetaBitacora))
-                    {
-                        Directory.CreateDirectory(carpetaBitacora);
-                    }
-
-                    File.WriteAllText(rutaArchivo, Environment.NewLine);
-                }
-
+                rutaArchivo = String.Format("{0}{1}", _carpetaBitacora, nombreArchivo);
                 fecha = String.Format("{0} {1}", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString());
                 String texto = String.Format("{0} {1} > {2} - {3} - {4} - {5} | {6}{7}", tipo, fecha, proyecto, clase, metodo, mensaje, excepcion, Environment.NewLine);
-                File.AppendAllText(rutaArchivo, texto);
-            }
-            catch (Exception ex)
-            {
-                File.WriteAllText(rutaArchivo, ex.Message);
-                throw ex;
-            }
-        }
 
-        private Boolean ValidarExistenciaArchivo(String rutaBitacora, String nombreArchivo)
-        {
-            Boolean existeArchivo = false;
-            try
-            {
-                String carpetaBitacora = ConfigurationManager.AppSettings[Constante.CARPETA_BITACORA] ?? String.Empty;
-
-                if (Directory.Exists(carpetaBitacora))
+                if (!Directory.Exists(_carpetaBitacora))
                 {
-                    DirectoryInfo directoryInfo = new DirectoryInfo(carpetaBitacora);
-                    FileInfo[] fileInfo = directoryInfo.GetFiles(Constante.PATRON_TXT, SearchOption.TopDirectoryOnly).OrderByDescending(f => f.LastWriteTime).ToArray();
-                    String nombreArchivoActual = fileInfo[0].Name;
-                    existeArchivo = nombreArchivo.Trim().ToLower() == nombreArchivoActual.Trim().ToLower() ? true : false;
-                    fileInfo = null;
+                    Directory.CreateDirectory(_carpetaBitacora);
+                }
+
+                using (FileStream fileStream = File.Open(rutaArchivo, FileMode.Append, FileAccess.Write, FileShare.Write))
+                {
+                    Encoding ISO = Encoding.GetEncoding(Constante.ISO_8859_1);
+                    Encoding UTF8 = Encoding.UTF8;
+                    byte[] bytes = Encoding.UTF8.GetBytes(texto);
+                    byte[] isoBytes = Encoding.Convert(UTF8, ISO, bytes);
+                    await fileStream.WriteAsync(isoBytes, Constante._0, isoBytes.Length, cancelToken);
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                File.WriteAllText(rutaBitacora, ex.Message);
-                throw ex;
+                File.WriteAllText(rutaArchivo, e.Message);
+                throw e;
             }
-            return existeArchivo;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Comun
         public static String NOMBRE_BITACORA = "HostToHostService";
         public static String EXTENSION_TXT = ".txt";
         public static String PATRON_TXT = "*.txt";
+        public static String ISO_8859_1 = "ISO-8859-1";
         public static String BITACORA_NOTIFICACION = "Notificación";
         public static String BITACORA_ERROR = "Error";
         public static String PROYECTO_SERVICE = "Servicio";

@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Comun
@@ -13,10 +15,10 @@ namespace Comun
         public Util()
         {
             _bitacora = _bitacora ?? new Bitacora();
-            CrearCarpetasLocales();
+            var isCreated = CrearCarpetasLocales(new CancellationToken(false));
         }
 
-        private Boolean CrearCarpetasLocales()
+        private async Task<Boolean> CrearCarpetasLocales(CancellationToken cancelToken)
         {
             Boolean isCreated = false;
             try
@@ -43,18 +45,18 @@ namespace Comun
                     Directory.CreateDirectory(carpetaDesencriptado);
                 }
 
-                _bitacora.RegistrarEvento(Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_CREAR_CARPETAS_LOCALES, Constante.MENSAJE_CREAR_CARPETAS_LOCALES_OK);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_CREAR_CARPETAS_LOCALES, Constante.MENSAJE_CREAR_CARPETAS_LOCALES_OK);
                 isCreated = true;
             }
             catch (Exception e)
             {
-                _bitacora.RegistrarEvento(Constante.BITACORA_ERROR, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_CREAR_CARPETAS_LOCALES, Constante.MENSAJE_CREAR_CARPETAS_LOCALES_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_CREAR_CARPETAS_LOCALES, Constante.MENSAJE_CREAR_CARPETAS_LOCALES_NO_OK, e.Message);
                 throw e;
             }
             return isCreated;
         }
 
-        public StringBuilder ConvertirCadenaAXml(String rutaArchivo)
+        public async Task<StringBuilder> ConvertirCadenaAXml(CancellationToken cancelToken, String rutaArchivo)
         {
             StringBuilder stringBuilder = new StringBuilder();
             try
@@ -81,17 +83,17 @@ namespace Comun
 
                 String mensaje = stringBuilder.ToString() != String.Empty ? Constante.MENSAJE_CONVERTIR_CADENA_A_XML_OK : Constante.MENSAJE_CONVERTIR_CADENA_A_XML_NO_OK;
                 mensaje = String.Format("{0} | {1}", mensaje, rutaArchivo);
-                _bitacora.RegistrarEvento(Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_CONVERTIR_CADENA_A_XML, mensaje);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_CONVERTIR_CADENA_A_XML, mensaje);
             }
             catch (Exception e)
             {
-                _bitacora.RegistrarEvento(Constante.BITACORA_ERROR, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_CONVERTIR_CADENA_A_XML, Constante.MENSAJE_CONVERTIR_CADENA_A_XML_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_CONVERTIR_CADENA_A_XML, Constante.MENSAJE_CONVERTIR_CADENA_A_XML_NO_OK, e.Message);
                 throw e;
             }
             return stringBuilder;
         }
 
-        public Boolean MoverArchivos(String rutaOrigen, String carpeta, String nombreArchivo)
+        public async Task<Boolean> MoverArchivos(CancellationToken cancelToken, String rutaOrigen, String carpeta, String nombreArchivo)
         {
             Boolean isMoved = false;
             try
@@ -101,16 +103,21 @@ namespace Comun
                 
                 if (File.Exists(rutaOrigen))
                 {
+                    if (File.Exists(rutaDestino))
+                    {
+                        File.Delete(rutaDestino);
+                    }
+
                     File.Move(rutaOrigen, rutaDestino);
                     isMoved = true;
                 }
 
                 String mensaje = isMoved == true ? Constante.MENSAJE_MOVER_ARCHIVOS_OK : Constante.MENSAJE_MOVER_ARCHIVOS_NO_OK;
-                _bitacora.RegistrarEvento(Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_MOVER_ARCHIVOS, mensaje);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_MOVER_ARCHIVOS, mensaje);
             }
             catch (Exception e)
             {
-                _bitacora.RegistrarEvento(Constante.BITACORA_ERROR, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_MOVER_ARCHIVOS, Constante.MENSAJE_MOVER_ARCHIVOS_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_MOVER_ARCHIVOS, Constante.MENSAJE_MOVER_ARCHIVOS_NO_OK, e.Message);
                 throw e;
             }
             return isMoved;

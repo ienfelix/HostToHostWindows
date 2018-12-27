@@ -3,6 +3,8 @@ using Modelo;
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Repositorio
 {
@@ -20,7 +22,7 @@ namespace Repositorio
             _conexion = ConfigurationManager.ConnectionStrings[Constante.CONEXION_DESARROLLO].ConnectionString;
         }
 
-        public RespuestaMO ProcesarTrama(TramaMO tramaMO, String tramaDetalle)
+        public async Task<RespuestaMO> ProcesarTrama(CancellationToken cancelToken, TramaMO tramaMO, String tramaDetalle)
         {
             RespuestaMO respuestaMO = new RespuestaMO();
             try
@@ -90,13 +92,13 @@ namespace Repositorio
                         _reader.Close();
                         _con.Close();
                         String mensaje = respuestaMO.Codigo == Constante.CODIGO_OK ? Constante.MENSAJE_PROCESAR_TRAMA_OK : Constante.MENSAJE_PROCESAR_TRAMA_NO_OK;
-                        _bitacora.RegistrarEvento(Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA, mensaje);
+                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA, mensaje);
                     }
                 }
             }
             catch (Exception e)
             {
-                _bitacora.RegistrarEvento(Constante.BITACORA_ERROR, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA, Constante.MENSAJE_PROCESAR_TRAMA_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA, Constante.MENSAJE_PROCESAR_TRAMA_NO_OK, e.Message);
                 throw e;
             }
             return respuestaMO;
