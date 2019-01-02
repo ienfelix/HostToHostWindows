@@ -1,4 +1,4 @@
-﻿namespace HostToHostService
+﻿namespace HostToHostWindows
 {
     partial class ServiceHostToHost
     {

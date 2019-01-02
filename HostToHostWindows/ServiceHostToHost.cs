@@ -5,7 +5,7 @@ using System;
 using System.ServiceProcess;
 using System.Threading;
 
-namespace HostToHostService
+namespace HostToHostWindows
 {
     public partial class ServiceHostToHost : ServiceBase
     {
@@ -19,7 +19,7 @@ namespace HostToHostService
             InitializeComponent();
         }
 
-        protected override async void OnStart(string[] args)
+        protected async override void OnStart(string[] args)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace HostToHostService
             }
         }
 
-        protected override async void OnStop()
+        protected async override void OnStop()
         {
             try
             {

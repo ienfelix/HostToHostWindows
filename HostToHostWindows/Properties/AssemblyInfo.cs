@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // La información general de un ensamblado se controla mediante el siguiente 
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada con un ensamblado.
-[assembly: AssemblyTitle("HostToHostService")]
+[assembly: AssemblyTitle("HostToHostWindows")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HostToHostService")]
+[assembly: AssemblyProduct("HostToHostWindows")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // El siguiente GUID sirve como id. de typelib si este proyecto se expone a COM.
-[assembly: Guid("4b45e5f2-044d-4220-a37e-5f4c70daf389")]
+[assembly: Guid("2fab858d-81d5-4d23-9609-7b1838a2399f")]
 
 // La información de versión de un ensamblado consta de los cuatro valores siguientes:
 //
