@@ -10,7 +10,7 @@ namespace Comun
         public static String CARPETA_INCORRECTO = "CARPETA_INCORRECTO";
         public static String CARPETA_ENCRIPTADO = "CARPETA_ENCRIPTADO";
         public static String CARPETA_DESENCRIPTADO = "CARPETA_DESENCRIPTADO";
-        public static String NOMBRE_BITACORA = "HostToHostService";
+        public static String NOMBRE_BITACORA = "BitacoraWindows";
         public static String EXTENSION_TXT = ".txt";
         public static String PATRON_TXT = "*.txt";
         public static String ISO_8859_1 = "ISO-8859-1";
