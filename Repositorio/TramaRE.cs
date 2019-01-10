@@ -22,7 +22,7 @@ namespace Repositorio
             _conexion = ConfigurationManager.ConnectionStrings[Constante.CONEXION_DESARROLLO].ConnectionString;
         }
 
-        public async Task<RespuestaMO> ProcesarTrama(CancellationToken cancelToken, TramaMO tramaMO, String tramaDetalle)
+        public async Task<RespuestaMO> ProcesarTramaAsync(CancellationToken cancelToken, TramaMO tramaMO, String tramaDetalle)
         {
             RespuestaMO respuestaMO = new RespuestaMO();
             try
@@ -91,14 +91,14 @@ namespace Repositorio
 
                         _reader.Close();
                         _con.Close();
-                        String mensaje = respuestaMO.Codigo == Constante.CODIGO_OK ? Constante.MENSAJE_PROCESAR_TRAMA_OK : Constante.MENSAJE_PROCESAR_TRAMA_NO_OK;
-                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA, mensaje);
+                        String mensaje = respuestaMO.Codigo == Constante.CODIGO_OK ? Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_OK : Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK;
+                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA_ASYNC, mensaje);
                     }
                 }
             }
             catch (Exception e)
             {
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA, Constante.MENSAJE_PROCESAR_TRAMA_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA_ASYNC, Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK, e.Message);
                 throw e;
             }
             return respuestaMO;

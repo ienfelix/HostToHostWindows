@@ -10,8 +10,10 @@ namespace Comun
         public static String CARPETA_INCORRECTO = "CARPETA_INCORRECTO";
         public static String CARPETA_ENCRIPTADO = "CARPETA_ENCRIPTADO";
         public static String CARPETA_DESENCRIPTADO = "CARPETA_DESENCRIPTADO";
+        public static String CARPETA_PROCESADO = "CARPETA_PROCESADO";
         public static String NOMBRE_BITACORA = "BitacoraWindows";
         public static String EXTENSION_TXT = ".txt";
+        public static String EXTENSION_PGP = ".pgp";
         public static String PATRON_TXT = "*.txt";
         public static String ISO_8859_1 = "ISO-8859-1";
         public static String BITACORA_NOTIFICACION = "Notificación";
@@ -23,18 +25,24 @@ namespace Comun
         public static String CLASE_SERVICE_HOST_TO_HOST = "ServiceHostToHost";
         public static String CLASE_TRAMA_NE = "TramaNE";
         public static String CLASE_TRAMA_RE = "TramaRE";
+        public static String CLASE_RESPUESTA_NE = "RespuestaNE";
+        public static String CLASE_RESPUESTA_RE = "RespuestaRE";
         public static String CLASE_UTIL = "Util";
         public static String METODO_ON_START = "OnStart";
         public static String METODO_ON_STOP = "OnStop";
-        public static String METODO_ON_TIMER_TRAMA = "OnTimerTrama";
-        public static String METODO_PROCESAR_TRAMA = "ProcesarTrama";
+        public static String METODO_ON_TIMER_TRAMA_ASYNC = "OnTimerTramaAsync";
+        public static String METODO_ON_TIMER_RESPUESTA_ASYNC = "OnTimerRespuestaAsync";
+        public static String METODO_PROCESAR_TRAMA_ASYNC = "ProcesarTramaAsync";
         public static String METODO_MAPEAR_CADENA_A_MODELO = "MapearStringAModelo";
         public static String METODO_CONVERTIR_CADENA_A_XML = "ConvertirCadenaAXml";
         public static String METODO_MOVER_ARCHIVOS = "MoverArchivos";
+        public static String METODO_PROCESAR_RESPUESTA_ASYNC = "ProcesarRespuestaAsync";
         public static String METODO_CREAR_CARPETAS_LOCALES = "CrearCarpetasLocales";
-        public static String MENSAJE_ON_TIMER_TRAMA_NO_OK = "No se procesó la trama.";
-        public static String MENSAJE_PROCESAR_TRAMA_OK = "Se procesó satisfactoriamente la trama.";
-        public static String MENSAJE_PROCESAR_TRAMA_NO_OK = "No se procesó la trama.";
+        public static String METODO_DESENCRIPTAR_ALMACENAR_ARCHIVO_ASYNC = "DesencriptarAlmacenarArchivoAsync";
+        public static String MENSAJE_ON_TIMER_TRAMA_ASYNC_NO_OK = "No se procesó la trama.";
+        public static String MENSAJE_ON_TIMER_RESPUESTA_ASYNC_NO_OK = "No se procesó la respuesta.";
+        public static String MENSAJE_PROCESAR_TRAMA_ASYNC_OK = "Se procesó satisfactoriamente la trama.";
+        public static String MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK = "No se procesó la trama.";
         public static String MENSAJE_CARPETA_ORIGEN_VACIA = "No hay documentos pendientes de traducir en la carpeta de origen.";
         public static String MENSAJE_PARAMETROS_NO_PRESENTES = "Parametros no presentes en el nombre del archivo.";
         public static String MENSAJE_CONVERTIR_CADENA_A_XML_OK = "Se convirtió satisfactoriamente la cadena a xml.";
@@ -45,6 +53,13 @@ namespace Comun
         public static String MENSAJE_MOVER_ARCHIVOS_NO_OK = "No se movió el archivo procesado.";
         public static String MENSAJE_CREAR_CARPETAS_LOCALES_OK = "Se creó satisfactoriamente las carpetas locales.";
         public static String MENSAJE_CREAR_CARPETAS_LOCALES_NO_OK = "No se creó las carpetas locales.";
+        public static String MENSAJE_PROCESAR_RESPUESTA_ASYNC_OK = "Se procesó satisfactoriamente la respuesta.";
+        public static String MENSAJE_PROCESAR_RESPUESTA_ASYNC_NO_OK = "Se procesó satisfactoriamente la respuesta.";
+        public static String MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_OK = "Se desencriptó satisfactoriamente el archivo.";
+        public static String MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_NO_OK = "No se desencriptó el archivo.";
+        public static String MENSAJE_ALMACENAR_ARCHIVO_ASYNC_OK = "Se almacenó satisfactoriamente los datos del archivo.";
+        public static String MENSAJE_ALMACENAR_ARCHIVO_ASYNC_NO_OK = "No se almacenó los datos del archivo.";
+        public static String MENSAJE_DESCARGAR_ARCHIVOS_ASYNC_OK = "Se descargó satisfactoriamente los archivos.";
         public static String ASTERIK = "**************************************************************************************************************************";
         public static Int32 CODIGO_OK = 10;
         public static Int32 CODIGO_NO_OK = -10;
@@ -70,7 +85,8 @@ namespace Comun
         public static String CONEXION_DESARROLLO = "conexionDesarrollo";
         public static String CONEXION_PRODUCCION = "conexionProduccion";
         public static String SPS_HTH_PROCESAR_TRAMA = "sps_hth_procesarTrama";
-        
+        public static String SPS_HTH_PROCESAR_RESPUESTA = "sps_hth_procesarRespuesta";
+
         public static String TRAMAS = "tramas";
         public static String TRAMA = "trama";
         public static String CADENA = "cadena";
@@ -86,6 +102,27 @@ namespace Comun
         public static String RUTA_ARCHIVO = "rutaArchivo";
         public static String PARAMETROS = "parametros";
         public static String TRAMA_DETALLE = "tramaDetalle";
+        public static String TRAMA_RESPUESTA = "tramaRespuesta";
         public static Int32 TIEMPO_UN_MINUTO = 60000;
+        public static Int32 TIEMPO_CINCO_MINUTO = 5 * 60000;
+        public static Int32 TIEMPO_DIEZ_MINUTO = 10 * 60000;
+        public static String SERVIDOR_SFTP_IP = "SERVIDOR_SFTP_IP";
+        public static String SERVIDOR_SFTP_PUERTO = "SERVIDOR_SFTP_PUERTO";
+        public static String SERVIDOR_SFTP_USUARIO = "SERVIDOR_SFTP_USUARIO";
+        public static String SERVIDOR_SFTP_CLAVE = "SERVIDOR_SFTP_CLAVE";
+        public static String SERVIDOR_SFTP_CARPETA_OUT = "SERVIDOR_SFTP_CARPETA_OUT";
+        public static String SINGLE_DOT = ".";
+        public static String DOUBLE_DOT = "..";
+        public static String PGP_DIRECTORY = @"C:\Program Files\PGP Corporation\PGP Command Line";
+        public static String PGP_EXE = "pgp.exe";
+        public static String PGP_VERBOSE = "pgp --verbose";
+        public static String PGP_HOME_DIRECTORY = "--home-dir";
+        public static String PGP_DECRYPT = "--decrypt";
+        public static String PGP_PASSPHRASE_DEV = "--passphrase \"HostToHost\"";
+        public static String PGP_PASSPHRASE_PRD = "--passphrase HostToHost";
+        public static String SCOTIABANK_DEV_KEY_ID = "--recipient 0x8FFFFEE2";
+        public static String SCOTIABANK_PRD_KEY_ID = "--recipient 0x9A91BC1E";
+        public static String PGP_OUTPUT = "--output";
+        public static String PGP_OVERWRITE = "--overwrite remove";
     }
 }

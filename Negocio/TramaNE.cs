@@ -22,7 +22,7 @@ namespace Negocio
             _bitacora = _bitacora ?? new Bitacora();
             _util = _util ?? new Util();
             _tramaRE = _tramaRE ?? new TramaRE();
-            esProcesado = true;
+            TramaNE.esProcesado = true;
         }
 
         public async Task<RespuestaMO> ProcesarTrama(CancellationToken cancelToken)
@@ -38,10 +38,10 @@ namespace Negocio
                 if (listaArchivosPendientes.Length == Constante._0)
                 {
                     String MENSAJE_CARPETA_ORIGEN_VACIA = String.Format("{0} | {1}", Constante.MENSAJE_CARPETA_ORIGEN_VACIA, carpetaOrigen);
-                    await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA, MENSAJE_CARPETA_ORIGEN_VACIA);
+                    await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, MENSAJE_CARPETA_ORIGEN_VACIA);
                     respuestaMO.Codigo = Constante.CODIGO_OK;
                     respuestaMO.Mensaje = MENSAJE_CARPETA_ORIGEN_VACIA;
-                    esProcesado = true;
+                    TramaNE.esProcesado = true;
                 }
                 else
                 {
@@ -57,7 +57,7 @@ namespace Negocio
 
                         if (stringBuilder.ToString() != String.Empty)
                         {
-                            respuestaMO = await _tramaRE.ProcesarTrama(cancelToken, tramaMO, stringBuilder.ToString());
+                            respuestaMO = await _tramaRE.ProcesarTramaAsync(cancelToken, tramaMO, stringBuilder.ToString());
                             Boolean esMovido = false;
 
                             if (respuestaMO != null && respuestaMO.Codigo == Constante.CODIGO_OK)
@@ -65,9 +65,9 @@ namespace Negocio
                                 esMovido = await _util.MoverArchivos(cancelToken, archivo, Constante.CARPETA_CORRECTO, tramaMO.NombreArchivo);
                             }
 
-                            String mensaje = esMovido == true ? Constante.MENSAJE_PROCESAR_TRAMA_OK : Constante.MENSAJE_PROCESAR_TRAMA_NO_OK;
+                            String mensaje = esMovido == true ? Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_OK : Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK;
                             mensaje = String.Format("{0} | {1}", mensaje, tramaMO.NombreArchivo);
-                            await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA, mensaje);
+                            await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, mensaje);
                         }
 
                         contador++;
@@ -75,17 +75,17 @@ namespace Negocio
 
                     if (contador == listaArchivosPendientes.Length)
                     {
-                        esProcesado = true;
+                        TramaNE.esProcesado = true;
                     }
                 }
             }
             catch (Exception e)
             {
-                esProcesado = true;
+                TramaNE.esProcesado = true;
                 Boolean esMovido = await _util.MoverArchivos(cancelToken, rutaOrigen, Constante.CARPETA_INCORRECTO, nombreArchivo);
                 String mensaje = e.Message;
                 mensaje = String.Format("{0} | {1}", mensaje, nombreArchivo);
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA, Constante.MENSAJE_PROCESAR_TRAMA_NO_OK, mensaje);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK, mensaje);
                 respuestaMO.Codigo = Constante.CODIGO_ERROR;
                 respuestaMO.Mensaje = mensaje;
                 throw e;

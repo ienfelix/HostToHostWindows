@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RespuestaRE.cs" />
     <Compile Include="TramaRE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

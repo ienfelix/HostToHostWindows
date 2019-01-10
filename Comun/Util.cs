@@ -27,6 +27,7 @@ namespace Comun
                 String carpetaIncorrecto = ConfigurationManager.AppSettings[Constante.CARPETA_INCORRECTO] ?? String.Empty;
                 String carpetaEncriptado = ConfigurationManager.AppSettings[Constante.CARPETA_ENCRIPTADO] ?? String.Empty;
                 String carpetaDesencriptado = ConfigurationManager.AppSettings[Constante.CARPETA_DESENCRIPTADO] ?? String.Empty;
+                String carpetaProcesado = ConfigurationManager.AppSettings[Constante.CARPETA_PROCESADO] ?? String.Empty;
 
                 if (!Directory.Exists(carpetaCorrecto))
                 {
@@ -43,6 +44,10 @@ namespace Comun
                 if (!Directory.Exists(carpetaDesencriptado))
                 {
                     Directory.CreateDirectory(carpetaDesencriptado);
+                }
+                if (!Directory.Exists(carpetaProcesado))
+                {
+                    Directory.CreateDirectory(carpetaProcesado);
                 }
 
                 await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_COMUN, Constante.CLASE_UTIL, Constante.METODO_CREAR_CARPETAS_LOCALES, Constante.MENSAJE_CREAR_CARPETAS_LOCALES_OK);
