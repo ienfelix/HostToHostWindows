@@ -9,8 +9,9 @@ namespace Comun
         public static String CARPETA_CORRECTO = "CARPETA_CORRECTO";
         public static String CARPETA_INCORRECTO = "CARPETA_INCORRECTO";
         public static String CARPETA_ENCRIPTADO = "CARPETA_ENCRIPTADO";
-        public static String CARPETA_DESENCRIPTADO = "CARPETA_DESENCRIPTADO";
+        public static String CARPETA_DESCARGADO = "CARPETA_DESCARGADO";
         public static String CARPETA_PROCESADO = "CARPETA_PROCESADO";
+        public static String CARPETA_RESPALDO = "CARPETA_RESPALDO";
         public static String NOMBRE_BITACORA = "BitacoraWindows";
         public static String EXTENSION_TXT = ".txt";
         public static String EXTENSION_PGP = ".pgp";
@@ -28,6 +29,8 @@ namespace Comun
         public static String CLASE_RESPUESTA_NE = "RespuestaNE";
         public static String CLASE_RESPUESTA_RE = "RespuestaRE";
         public static String CLASE_UTIL = "Util";
+        public static String CLASE_CONEXION_SAP_NE = "ConexionSapNE";
+        public static String CLASE_CONEXION_SAP = "ConexionSap";
         public static String METODO_ON_START = "OnStart";
         public static String METODO_ON_STOP = "OnStop";
         public static String METODO_ON_TIMER_TRAMA_ASYNC = "OnTimerTramaAsync";
@@ -39,6 +42,10 @@ namespace Comun
         public static String METODO_PROCESAR_RESPUESTA_ASYNC = "ProcesarRespuestaAsync";
         public static String METODO_CREAR_CARPETAS_LOCALES = "CrearCarpetasLocales";
         public static String METODO_DESENCRIPTAR_ALMACENAR_ARCHIVO_ASYNC = "DesencriptarAlmacenarArchivoAsync";
+        public static String METODO_MAPEAR_ESTRUCTURA_A_MODELO = "MapearEstructuraAModelo";
+        public static String METODO_GET_PARAMETERS_ASYNC = "GetParametersAsync";
+        public static String METODO_CONVERTIR_CADENA_A_FECHA_ASYNC = "ConvertirCadenaAFechaAsync";
+        public static String METODO_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC = "EnviarEstadoProcesoHostToHostAsync";
         public static String MENSAJE_ON_TIMER_TRAMA_ASYNC_NO_OK = "No se procesó la trama.";
         public static String MENSAJE_ON_TIMER_RESPUESTA_ASYNC_NO_OK = "No se procesó la respuesta.";
         public static String MENSAJE_PROCESAR_TRAMA_ASYNC_OK = "Se procesó satisfactoriamente la trama.";
@@ -59,7 +66,10 @@ namespace Comun
         public static String MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_NO_OK = "No se desencriptó el archivo.";
         public static String MENSAJE_ALMACENAR_ARCHIVO_ASYNC_OK = "Se almacenó satisfactoriamente los datos del archivo.";
         public static String MENSAJE_ALMACENAR_ARCHIVO_ASYNC_NO_OK = "No se almacenó los datos del archivo.";
-        public static String MENSAJE_DESCARGAR_ARCHIVOS_ASYNC_OK = "Se descargó satisfactoriamente los archivos.";
+        public static String MENSAJE_DESCARGAR_ARCHIVOS_ASYNC_OK = "Se descargó satisfactoriamente el archivo.";
+        public static String MENSAJE_DESCARGAR_ARCHIVOS_ASYNC_NO_OK = "No se descargó el archivo.";
+        public static String MENSAJE_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC_OK = "Se envió satisfactoriamente el estado del proceso HostToHost.";
+        public static String MENSAJE_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC_NO_OK = "No se envió el estado del proceso HostToHost.";
         public static String ASTERIK = "**************************************************************************************************************************";
         public static Int32 CODIGO_OK = 10;
         public static Int32 CODIGO_NO_OK = -10;
@@ -124,5 +134,27 @@ namespace Comun
         public static String SCOTIABANK_PRD_KEY_ID = "--recipient 0x9A91BC1E";
         public static String PGP_OUTPUT = "--output";
         public static String PGP_OVERWRITE = "--overwrite remove";
+
+        public static String SAP_NAME = "sapName";
+        public static String SAP_APP_SERVER_HOST = "sapAppServerHost";
+        public static String SAP_SYSTEM_NUM = "sapSystemNum";
+        public static String SAP_SYSTEM_ID = "sapSystemId";
+        public static String SAP_USERNAME = "sapUserName";
+        public static String SAP_PASSWORD = "sapPassword";
+        public static String SAP_CLIENT = "sapClient";
+        public static String SAP_LANGUAGE = "sapLanguage";
+        public static String SAP_POOL_SIZE = "sapPoolSize";
+        public static String DESTINATION_NAME = "QAS";
+        public static String FUNCTION_YFIRFC_ACTSTS_H2H = "YFIRFC_ACTSTS_H2H";
+        public static String IP_BUKRS = "IP_BUKRS";
+        public static String IP_GJAHR = "IP_GJAHR";
+        public static String IP_LAUFD = "IP_LAUFD";
+        public static String IP_BSTAT = "IP_BSTAT";
+        public static String IP_REF1 = "IP_REF1";
+        public static String IP_USNAM = "IP_USNAM";
+        public static String EW_MENSG = "EW_MENSG";
+        public static String TIPO = "TIPO";
+        public static String MENSAJE = "MENSAJE";
+        public static String TYPE_SUCCESS = "S";
     }
 }

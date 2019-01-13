@@ -21,7 +21,8 @@ namespace Negocio
         private Bitacora _bitacora = null;
         private Util _util = null;
         private RespuestaRE _respuestaRE = null;
-        private String _carpetaRemota = String.Empty, _carpetaDesencriptado = String.Empty, _carpetaProcesado = String.Empty;
+        private String _carpetaRemota = String.Empty, _carpetaDescargado = String.Empty, _carpetaProcesado = String.Empty, _carpetaRespaldo = String.Empty;
+        private ConexionSapNE _conexionSapNE = null;
 
         public RespuestaNE()
         {
@@ -30,9 +31,10 @@ namespace Negocio
             _respuestaRE = _respuestaRE ?? new RespuestaRE();
             RespuestaNE.esProcesado = true;
             _carpetaRemota = ConfigurationManager.AppSettings[Constante.SERVIDOR_SFTP_CARPETA_OUT] ?? String.Empty;
-            _carpetaDesencriptado = ConfigurationManager.AppSettings[Constante.CARPETA_DESENCRIPTADO] ?? String.Empty;
-            _carpetaDesencriptado = ConfigurationManager.AppSettings[Constante.CARPETA_DESENCRIPTADO] ?? String.Empty;
+            _carpetaDescargado = ConfigurationManager.AppSettings[Constante.CARPETA_DESCARGADO] ?? String.Empty;
             _carpetaProcesado = ConfigurationManager.AppSettings[Constante.CARPETA_PROCESADO] ?? String.Empty;
+            _carpetaRespaldo = ConfigurationManager.AppSettings[Constante.CARPETA_RESPALDO] ?? String.Empty;
+            _conexionSapNE = _conexionSapNE ?? new ConexionSapNE();
         }
 
         public async Task<RespuestaMO> ProcesarRespuesta(CancellationToken cancelToken)
@@ -80,29 +82,36 @@ namespace Negocio
                                     if (archivo.IsRegularFile)
                                     {
                                         String rutaRemota = String.Format("{0}{1}", _carpetaRemota, archivo.Name);
-                                        String rutaArchivo = String.Format("{0}{1}", _carpetaDesencriptado, archivo.Name);
+                                        String rutaArchivo = String.Format("{0}{1}", _carpetaDescargado, archivo.Name);
 
                                         using (FileStream fileStream = File.Create(rutaArchivo))
                                         {
                                             sftpClient.DownloadFile(rutaRemota, fileStream);
                                         }
 
-                                        if (File.Exists(rutaArchivo))
+                                        Boolean esDescargado = File.Exists(rutaArchivo);
+
+                                        if (esDescargado)
                                         {
                                             sftpClient.DeleteFile(rutaRemota);
                                             String nombreArchivo = archivo.Name.Replace(Constante.EXTENSION_PGP, Constante.EXTENSION_TXT);
                                             listaNombreArchivos.Add(nombreArchivo, rutaArchivo);
+                                            contador++;
                                         }
+
+                                        String mensaje = esDescargado == true ? Constante.MENSAJE_DESCARGAR_ARCHIVOS_ASYNC_OK : Constante.MENSAJE_DESCARGAR_ARCHIVOS_ASYNC_NO_OK;
+                                        mensaje = String.Format("{0} | {1}", mensaje, archivo.Name);
+                                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, mensaje);
                                     }
                                 }
-
-                                contador++;
                             }
 
-                            if (contador == listaArchivos.Count())
+                            if (contador != listaArchivos.Count() - Constante._2)
                             {
-                                String mensaje = Constante.MENSAJE_DESCARGAR_ARCHIVOS_ASYNC_OK;
-                                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, mensaje);
+                                String MENSAJE_CARPETA_ORIGEN_VACIA = String.Format("{0} | {1}", Constante.MENSAJE_CARPETA_ORIGEN_VACIA, _carpetaRemota);
+                                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, MENSAJE_CARPETA_ORIGEN_VACIA);
+                                respuestaMO.Codigo = Constante.CODIGO_OK;
+                                respuestaMO.Mensaje = MENSAJE_CARPETA_ORIGEN_VACIA;
                             }
                         }
                     }
@@ -112,6 +121,10 @@ namespace Negocio
                 }
 
                 if (puedeContinuar == false)
+                {
+                    RespuestaNE.esProcesado = true;
+                }
+                else if (puedeContinuar == true && listaNombreArchivos != null && listaNombreArchivos.Count == 0)
                 {
                     RespuestaNE.esProcesado = true;
                 }
@@ -152,8 +165,11 @@ namespace Negocio
 
                                 if (respuestaMO != null && respuestaMO.Codigo == Constante.CODIGO_OK)
                                 {
+                                    String rutaRespaldo = String.Format("{0}{1}", _carpetaRespaldo, nombreArchivo);
+                                    File.Move(rutaArchivo, rutaRespaldo);
                                     esAlmacenado = true;
                                     esConforme = true;
+                                    await _conexionSapNE.EnviarEstadoProcesoHostToHostAsync(cancelToken, respuestaMO.IdSociedad, respuestaMO.Anio, respuestaMO.MomentoOrden, respuestaMO.IdEstadoOrden, respuestaMO.IdSap, respuestaMO.Usuario);
                                 }
 
                                 String mensajeDesencriptado = esDesencriptado ? Constante.MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_OK : Constante.MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_NO_OK;

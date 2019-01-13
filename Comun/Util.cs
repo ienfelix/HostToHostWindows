@@ -26,7 +26,7 @@ namespace Comun
                 String carpetaCorrecto = ConfigurationManager.AppSettings[Constante.CARPETA_CORRECTO] ?? String.Empty;
                 String carpetaIncorrecto = ConfigurationManager.AppSettings[Constante.CARPETA_INCORRECTO] ?? String.Empty;
                 String carpetaEncriptado = ConfigurationManager.AppSettings[Constante.CARPETA_ENCRIPTADO] ?? String.Empty;
-                String carpetaDesencriptado = ConfigurationManager.AppSettings[Constante.CARPETA_DESENCRIPTADO] ?? String.Empty;
+                String carpetaDescargado = ConfigurationManager.AppSettings[Constante.CARPETA_DESCARGADO] ?? String.Empty;
                 String carpetaProcesado = ConfigurationManager.AppSettings[Constante.CARPETA_PROCESADO] ?? String.Empty;
 
                 if (!Directory.Exists(carpetaCorrecto))
@@ -41,9 +41,9 @@ namespace Comun
                 {
                     Directory.CreateDirectory(carpetaEncriptado);
                 }
-                if (!Directory.Exists(carpetaDesencriptado))
+                if (!Directory.Exists(carpetaDescargado))
                 {
-                    Directory.CreateDirectory(carpetaDesencriptado);
+                    Directory.CreateDirectory(carpetaDescargado);
                 }
                 if (!Directory.Exists(carpetaProcesado))
                 {

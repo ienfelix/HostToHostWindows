@@ -50,6 +50,12 @@ namespace Repositorio
                             {
                                 respuestaMO.Codigo = _reader.IsDBNull(Constante._0) ? 0 : _reader.GetInt32(Constante._0);
                                 respuestaMO.Mensaje = _reader.IsDBNull(Constante._1) ? String.Empty : _reader.GetString(Constante._1);
+                                respuestaMO.IdSociedad = _reader.IsDBNull(Constante._2) ? String.Empty : _reader.GetString(Constante._2);
+                                respuestaMO.IdSap = _reader.IsDBNull(Constante._3) ? String.Empty : _reader.GetString(Constante._3);
+                                respuestaMO.Anio = _reader.IsDBNull(Constante._4) ? String.Empty : _reader.GetString(Constante._4);
+                                respuestaMO.MomentoOrden = _reader.IsDBNull(Constante._5) ? String.Empty : _reader.GetString(Constante._5);
+                                respuestaMO.IdEstadoOrden = _reader.IsDBNull(Constante._6) ? String.Empty : _reader.GetString(Constante._6);
+                                respuestaMO.Usuario = _reader.IsDBNull(Constante._7) ? String.Empty : _reader.GetString(Constante._7);
                             }
                         }
 
