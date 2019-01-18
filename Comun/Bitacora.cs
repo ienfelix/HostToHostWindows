@@ -16,7 +16,7 @@ namespace Comun
             _carpetaBitacora = ConfigurationManager.AppSettings[Constante.CARPETA_BITACORA] ?? String.Empty;
         }
 
-        public async Task RegistrarEventoAsync(CancellationToken cancelToken, String tipo, String proyecto, String clase, String metodo, String mensaje)
+        public async Task RegistrarEventoAsync(CancellationToken cancelToken, String tipo, String proyecto, String clase, String metodo, String ordenBancaria, String mensaje)
         {
             String rutaArchivo = String.Empty;
             try
@@ -25,7 +25,7 @@ namespace Comun
                 String nombreArchivo = String.Format("{0}_{1}{2}", Constante.NOMBRE_BITACORA, fecha, Constante.EXTENSION_TXT);
                 rutaArchivo = String.Format("{0}{1}", _carpetaBitacora, nombreArchivo);
                 fecha = String.Format("{0} {1}", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString());
-                String texto = String.Format("{0} {1} > {2} - {3} - {4} - {5}{6}", tipo, fecha, proyecto, clase, metodo, mensaje, Environment.NewLine);
+                String texto = String.Format("{0} {1} > {2} - {3} - {4} - {5} - {6}{7}", tipo, fecha, proyecto, clase, metodo, ordenBancaria, mensaje, Environment.NewLine);
 
                 if (!Directory.Exists(_carpetaBitacora))
                 {
@@ -48,7 +48,7 @@ namespace Comun
             }
         }
 
-        public async Task RegistrarEventoAsync(CancellationToken cancelToken, String tipo, String proyecto, String clase, String metodo, String mensaje, String excepcion)
+        public async Task RegistrarEventoAsync(CancellationToken cancelToken, String tipo, String proyecto, String clase, String metodo, String ordenBancaria, String mensaje, String excepcion)
         {
             String rutaArchivo = String.Empty;
             try
@@ -57,7 +57,7 @@ namespace Comun
                 String nombreArchivo = String.Format("{0}_{1}{2}", Constante.NOMBRE_BITACORA, fecha, Constante.EXTENSION_TXT);
                 rutaArchivo = String.Format("{0}{1}", _carpetaBitacora, nombreArchivo);
                 fecha = String.Format("{0} {1}", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString());
-                String texto = String.Format("{0} {1} > {2} - {3} - {4} - {5} | {6}{7}", tipo, fecha, proyecto, clase, metodo, mensaje, excepcion, Environment.NewLine);
+                String texto = String.Format("{0} {1} > {2} - {3} - {4} - {5} - {6} - {7}{8}", tipo, fecha, proyecto, clase, metodo, ordenBancaria, mensaje, excepcion, Environment.NewLine);
 
                 if (!Directory.Exists(_carpetaBitacora))
                 {

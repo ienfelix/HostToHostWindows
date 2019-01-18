@@ -14,5 +14,6 @@ namespace Modelo
         public String Usuario { get; set; }
         public String IdRespuesta { get; set; }
         public String Respuesta { get; set; }
+        public String NombreArchivo { get; set; }
     }
 }

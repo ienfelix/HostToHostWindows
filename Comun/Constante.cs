@@ -37,7 +37,7 @@ namespace Comun
         public static String METODO_ON_TIMER_RESPUESTA_ASYNC = "OnTimerRespuestaAsync";
         public static String METODO_PROCESAR_TRAMA_ASYNC = "ProcesarTramaAsync";
         public static String METODO_MAPEAR_CADENA_A_MODELO = "MapearStringAModelo";
-        public static String METODO_CONVERTIR_CADENA_A_XML = "ConvertirCadenaAXml";
+        public static String METODO_CONVERTIR_CADENA_HACIA_XML = "ConvertirCadenaAXml";
         public static String METODO_MOVER_ARCHIVOS = "MoverArchivos";
         public static String METODO_PROCESAR_RESPUESTA_ASYNC = "ProcesarRespuestaAsync";
         public static String METODO_CREAR_CARPETAS_LOCALES = "CrearCarpetasLocales";
@@ -46,14 +46,18 @@ namespace Comun
         public static String METODO_GET_PARAMETERS_ASYNC = "GetParametersAsync";
         public static String METODO_CONVERTIR_CADENA_A_FECHA_ASYNC = "ConvertirCadenaAFechaAsync";
         public static String METODO_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC = "EnviarEstadoProcesoHostToHostAsync";
+        public static String MENSAJE_LONGITUD_CARACTERES_ARCHIVO_INVALIDO = "El nombre del archivo solo puede contener 15 caracteres como máximo.";
+        public static String MENSAJE_EXTENSION_ARCHIVO_INVALIDO = "El nombre del archivo solo puede contener la extensión [.txt]";
+        public static String MENSAJE_CANTIDAD_PARAMETROS_INVALIDO = "El nombre del archivo no presenta la cantidad parametros necesarios.";
+
         public static String MENSAJE_ON_TIMER_TRAMA_ASYNC_NO_OK = "No se procesó la trama.";
         public static String MENSAJE_ON_TIMER_RESPUESTA_ASYNC_NO_OK = "No se procesó la respuesta.";
         public static String MENSAJE_PROCESAR_TRAMA_ASYNC_OK = "Se procesó satisfactoriamente la trama.";
         public static String MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK = "No se procesó la trama.";
         public static String MENSAJE_CARPETA_ORIGEN_VACIA = "No hay documentos pendientes de traducir en la carpeta de origen.";
         public static String MENSAJE_PARAMETROS_NO_PRESENTES = "Parametros no presentes en el nombre del archivo.";
-        public static String MENSAJE_CONVERTIR_CADENA_A_XML_OK = "Se convirtió satisfactoriamente la cadena a xml.";
-        public static String MENSAJE_CONVERTIR_CADENA_A_XML_NO_OK = "No se convirtió la cadena a xml.";
+        public static String MENSAJE_CONVERTIR_CADENA_HACIA_XML_OK = "Se convirtió satisfactoriamente la cadena a xml.";
+        public static String MENSAJE_CONVERTIR_CADENA_HACIA_XML_NO_OK = "No se convirtió la cadena a xml.";
         public static String MENSAJE_MAPEAR_CADENA_A_MODELO_OK = "Se mapeó satisfactoriamente la cadena a modelo.";
         public static String MENSAJE_MAPEAR_CADENA_A_MODELO_NO_OK = "No se mapeó la cadena a modelo.";
         public static String MENSAJE_MOVER_ARCHIVOS_OK = "Se movió satisfactoriamente el archivo procesado.";
@@ -89,6 +93,7 @@ namespace Comun
         public static Int32 _9 = 9;
         public static Int32 _10 = 10;
         public static Int32 _11 = 11;
+        public static Int32 _15 = 15;
         public static Int32 _20 = 20;
         public static Int32 _100 = 100;
         public static Int32 _200 = 200;
@@ -108,6 +113,7 @@ namespace Comun
         public static String ID_SAP = "idSap";
         public static String ANIO = "anio";
         public static String MOMENTO_ORDEN = "momentoOrden";
+        public static String PROPIETARIO = "propietario";
         public static String NOMBRE_ARCHIVO = "nombreArchivo";
         public static String RUTA_ARCHIVO = "rutaArchivo";
         public static String PARAMETROS = "parametros";

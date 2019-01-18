@@ -52,37 +52,39 @@ namespace HostToHostWindows
 
         private async void OnTimerTramaAsync(object sender)
         {
+            RespuestaMO respuestaMO = null;
             try
             {
                 if (TramaNE.esProcesado)
                 {
                     TramaNE.esProcesado = false;
-                    RespuestaMO respuestaMO = await _tramaNE.ProcesarTrama(_cancelToken);
-                    await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_TRAMA_ASYNC, respuestaMO.Mensaje);
-                    await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_TRAMA_ASYNC, Constante.ASTERIK);
+                    respuestaMO = await _tramaNE.ProcesarTrama(_cancelToken);
+                    await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_TRAMA_ASYNC, respuestaMO.NombreArchivo, respuestaMO.Mensaje);
+                    await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_TRAMA_ASYNC, respuestaMO.NombreArchivo, Constante.ASTERIK);
                 }
             }
             catch (Exception e)
             {
-                await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_TRAMA_ASYNC, Constante.MENSAJE_ON_TIMER_TRAMA_ASYNC_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_TRAMA_ASYNC, respuestaMO.NombreArchivo, Constante.MENSAJE_ON_TIMER_TRAMA_ASYNC_NO_OK, e.Message);
             }
         }
 
         private async void OnTimerRespuestaAsync(object sender)
         {
+            RespuestaMO respuestaMO = null;
             try
             {
                 if (RespuestaNE.esProcesado)
                 {
                     RespuestaNE.esProcesado = false;
-                    RespuestaMO respuestaMO = await _respuestaNE.ProcesarRespuesta(_cancelToken);
-                    await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_RESPUESTA_ASYNC, respuestaMO.Mensaje);
-                    await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_RESPUESTA_ASYNC, Constante.ASTERIK);
+                    respuestaMO = await _respuestaNE.ProcesarRespuesta(_cancelToken);
+                    await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_RESPUESTA_ASYNC, respuestaMO.NombreArchivo, respuestaMO.Mensaje);
+                    await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_RESPUESTA_ASYNC, respuestaMO.NombreArchivo, Constante.ASTERIK);
                 }
             }
             catch (Exception e)
             {
-                await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_RESPUESTA_ASYNC, Constante.MENSAJE_ON_TIMER_RESPUESTA_ASYNC_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(_cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_SERVICE, Constante.CLASE_SERVICE_HOST_TO_HOST, Constante.METODO_ON_TIMER_RESPUESTA_ASYNC, respuestaMO.NombreArchivo, Constante.MENSAJE_ON_TIMER_RESPUESTA_ASYNC_NO_OK, e.Message);
             }
         }
     }

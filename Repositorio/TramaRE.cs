@@ -22,7 +22,7 @@ namespace Repositorio
             _conexion = ConfigurationManager.ConnectionStrings[Constante.CONEXION_DESARROLLO].ConnectionString;
         }
 
-        public async Task<RespuestaMO> ProcesarTramaAsync(CancellationToken cancelToken, TramaMO tramaMO, String tramaDetalle)
+        public async Task<RespuestaMO> ProcesarTramaAsync(CancellationToken cancelToken, TramaMO tramaMO, String tramaDetalle, String nombreArchivo)
         {
             RespuestaMO respuestaMO = new RespuestaMO();
             try
@@ -61,21 +61,25 @@ namespace Repositorio
                         par7.Direction = System.Data.ParameterDirection.Input;
                         par7.Value = tramaMO.MomentoOrden;
 
-                        SqlParameter par8 = _cmd.Parameters.Add(Constante.NOMBRE_ARCHIVO, System.Data.SqlDbType.NVarChar, Constante._100);
+                        SqlParameter par8 = _cmd.Parameters.Add(Constante.PROPIETARIO, System.Data.SqlDbType.NVarChar, Constante._20);
                         par8.Direction = System.Data.ParameterDirection.Input;
-                        par8.Value = tramaMO.NombreArchivo;
+                        par8.Value = tramaMO.Propietario;
 
-                        SqlParameter par9 = _cmd.Parameters.Add(Constante.RUTA_ARCHIVO, System.Data.SqlDbType.NVarChar, Constante._200);
+                        SqlParameter par9 = _cmd.Parameters.Add(Constante.NOMBRE_ARCHIVO, System.Data.SqlDbType.NVarChar, Constante._100);
                         par9.Direction = System.Data.ParameterDirection.Input;
-                        par9.Value = tramaMO.RutaArchivo;
+                        par9.Value = tramaMO.NombreArchivo;
 
-                        SqlParameter par10 = _cmd.Parameters.Add(Constante.PARAMETROS, System.Data.SqlDbType.NVarChar, Constante._100);
+                        SqlParameter par10 = _cmd.Parameters.Add(Constante.RUTA_ARCHIVO, System.Data.SqlDbType.NVarChar, Constante._200);
                         par10.Direction = System.Data.ParameterDirection.Input;
-                        par10.Value = tramaMO.Parametros;
+                        par10.Value = tramaMO.RutaArchivo;
 
-                        SqlParameter par11 = _cmd.Parameters.Add(Constante.TRAMA_DETALLE, System.Data.SqlDbType.Xml);
+                        SqlParameter par11 = _cmd.Parameters.Add(Constante.PARAMETROS, System.Data.SqlDbType.NVarChar, Constante._100);
                         par11.Direction = System.Data.ParameterDirection.Input;
-                        par11.Value = tramaDetalle;
+                        par11.Value = tramaMO.Parametros;
+
+                        SqlParameter par12 = _cmd.Parameters.Add(Constante.TRAMA_DETALLE, System.Data.SqlDbType.Xml);
+                        par12.Direction = System.Data.ParameterDirection.Input;
+                        par12.Value = tramaDetalle;
 
                         _con.Open();
                         _reader = _cmd.ExecuteReader(System.Data.CommandBehavior.SingleRow);
@@ -92,13 +96,13 @@ namespace Repositorio
                         _reader.Close();
                         _con.Close();
                         String mensaje = respuestaMO.Codigo == Constante.CODIGO_OK ? Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_OK : Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK;
-                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA_ASYNC, mensaje);
+                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA_ASYNC, nombreArchivo, mensaje);
                     }
                 }
             }
             catch (Exception e)
             {
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA_ASYNC, Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_TRAMA_RE, Constante.METODO_PROCESAR_TRAMA_ASYNC, nombreArchivo, Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK, e.Message);
                 throw e;
             }
             return respuestaMO;

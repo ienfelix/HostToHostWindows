@@ -42,7 +42,7 @@ namespace Negocio
             RespuestaMO respuestaMO = new RespuestaMO();
             Int32 contador = 0;
             Dictionary<String, String> listaNombreArchivos = null;
-            String arguments = String.Empty, error = String.Empty, message = String.Empty;
+            String arguments = String.Empty, error = String.Empty, message = String.Empty, nombreArchivo = String.Empty;
             Boolean puedeContinuar = false;
             try
             {
@@ -66,7 +66,7 @@ namespace Negocio
                         if (listaArchivos == null || !listaArchivos.Any())
                         {
                             String MENSAJE_CARPETA_ORIGEN_VACIA = String.Format("{0} | {1}", Constante.MENSAJE_CARPETA_ORIGEN_VACIA, _carpetaRemota);
-                            await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, MENSAJE_CARPETA_ORIGEN_VACIA);
+                            await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, String.Empty, MENSAJE_CARPETA_ORIGEN_VACIA);
                             respuestaMO.Codigo = Constante.CODIGO_OK;
                             respuestaMO.Mensaje = MENSAJE_CARPETA_ORIGEN_VACIA;
                         }
@@ -81,6 +81,8 @@ namespace Negocio
                                 {
                                     if (archivo.IsRegularFile)
                                     {
+                                        respuestaMO.NombreArchivo = archivo.Name.Replace(Constante.EXTENSION_PGP, Constante.EXTENSION_TXT);
+                                        nombreArchivo = archivo.Name.Replace(Constante.EXTENSION_PGP, Constante.EXTENSION_TXT);
                                         String rutaRemota = String.Format("{0}{1}", _carpetaRemota, archivo.Name);
                                         String rutaArchivo = String.Format("{0}{1}", _carpetaDescargado, archivo.Name);
 
@@ -94,22 +96,22 @@ namespace Negocio
                                         if (esDescargado)
                                         {
                                             sftpClient.DeleteFile(rutaRemota);
-                                            String nombreArchivo = archivo.Name.Replace(Constante.EXTENSION_PGP, Constante.EXTENSION_TXT);
                                             listaNombreArchivos.Add(nombreArchivo, rutaArchivo);
-                                            contador++;
                                         }
 
                                         String mensaje = esDescargado == true ? Constante.MENSAJE_DESCARGAR_ARCHIVOS_ASYNC_OK : Constante.MENSAJE_DESCARGAR_ARCHIVOS_ASYNC_NO_OK;
                                         mensaje = String.Format("{0} | {1}", mensaje, archivo.Name);
-                                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, mensaje);
+                                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, nombreArchivo, mensaje);
                                     }
+
+                                    contador++;
                                 }
                             }
 
-                            if (contador != listaArchivos.Count() - Constante._2)
+                            if (contador == Constante._2)
                             {
                                 String MENSAJE_CARPETA_ORIGEN_VACIA = String.Format("{0} | {1}", Constante.MENSAJE_CARPETA_ORIGEN_VACIA, _carpetaRemota);
-                                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, MENSAJE_CARPETA_ORIGEN_VACIA);
+                                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, String.Empty, MENSAJE_CARPETA_ORIGEN_VACIA);
                                 respuestaMO.Codigo = Constante.CODIGO_OK;
                                 respuestaMO.Mensaje = MENSAJE_CARPETA_ORIGEN_VACIA;
                             }
@@ -136,7 +138,8 @@ namespace Negocio
 
                     foreach (var item in listaNombreArchivos)
                     {
-                        String nombreArchivo = item.Key;
+                        respuestaMO.NombreArchivo = item.Key;
+                        nombreArchivo = item.Key;
                         String rutaArchivo = item.Value;
                         String homeDirectory = string.Format("\"{0}\"", Constante.PGP_DIRECTORY);
                         arguments = String.Format("{0} {1} {2} {3} {4} {5} {6} {7} {8}", Constante.PGP_VERBOSE, Constante.PGP_HOME_DIRECTORY, homeDirectory, Constante.PGP_DECRYPT, rutaArchivo, Constante.PGP_PASSPHRASE_DEV, Constante.PGP_OUTPUT, carpetaProcesado, Constante.PGP_OVERWRITE);
@@ -157,25 +160,31 @@ namespace Negocio
                         if (File.Exists(rutaArchivo))
                         {
                             esDesencriptado = true;
-                            StringBuilder stringBuilder = await _util.ConvertirCadenaAXml(cancelToken, rutaArchivo);
+                            String cadenaXml = await _util.ConvertirCadenaHaciaXml(cancelToken, rutaArchivo, nombreArchivo);
 
-                            if (stringBuilder.ToString() != String.Empty)
+                            if (cadenaXml != String.Empty)
                             {
-                                respuestaMO = await _respuestaRE.ProcesarRespuestaAsync(cancelToken, nombreArchivo, stringBuilder.ToString());
+                                respuestaMO = await _respuestaRE.ProcesarRespuestaAsync(cancelToken, nombreArchivo, cadenaXml);
 
                                 if (respuestaMO != null && respuestaMO.Codigo == Constante.CODIGO_OK)
                                 {
                                     String rutaRespaldo = String.Format("{0}{1}", _carpetaRespaldo, nombreArchivo);
+
+                                    if (File.Exists(rutaRespaldo))
+                                    {
+                                        File.Delete(rutaRespaldo);
+                                    }
+
                                     File.Move(rutaArchivo, rutaRespaldo);
                                     esAlmacenado = true;
                                     esConforme = true;
-                                    await _conexionSapNE.EnviarEstadoProcesoHostToHostAsync(cancelToken, respuestaMO.IdSociedad, respuestaMO.Anio, respuestaMO.MomentoOrden, respuestaMO.IdEstadoOrden, respuestaMO.IdSap, respuestaMO.Usuario);
+                                    await _conexionSapNE.EnviarEstadoProcesoHostToHostAsync(cancelToken, respuestaMO.IdSociedad, respuestaMO.Anio, respuestaMO.MomentoOrden, respuestaMO.IdEstadoOrden, respuestaMO.IdSap, respuestaMO.Usuario, nombreArchivo);
                                 }
 
                                 String mensajeDesencriptado = esDesencriptado ? Constante.MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_OK : Constante.MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_NO_OK;
                                 String mensajeAlmacenado = esAlmacenado ? Constante.MENSAJE_ALMACENAR_ARCHIVO_ASYNC_OK : Constante.MENSAJE_ALMACENAR_ARCHIVO_ASYNC_NO_OK;
                                 String mensaje = esConforme ? String.Format("{0} {1}", Constante.MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_OK, Constante.MENSAJE_ALMACENAR_ARCHIVO_ASYNC_OK) : String.Format("{0} | {1} | {2} | {3} | {4}", mensajeDesencriptado, mensajeAlmacenado, arguments, message, error);
-                                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, mensaje);
+                                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, nombreArchivo, mensaje);
                             }
                         }
 
@@ -191,7 +200,7 @@ namespace Negocio
             catch (Exception e)
             {
                 RespuestaNE.esProcesado = true;
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, Constante.MENSAJE_PROCESAR_RESPUESTA_ASYNC_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_NEGOCIO, Constante.CLASE_RESPUESTA_NE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, nombreArchivo, Constante.MENSAJE_PROCESAR_RESPUESTA_ASYNC_NO_OK, e.Message);
                 respuestaMO.Codigo = Constante.CODIGO_ERROR;
                 respuestaMO.Mensaje = e.Message;
             }

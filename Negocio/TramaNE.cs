@@ -16,6 +16,7 @@ namespace Negocio
         private Bitacora _bitacora = null;
         private Util _util = null;
         private TramaRE _tramaRE = null;
+        private String _carpetaOrigen = String.Empty, _carpetaCorrecto = String.Empty, _carpetaIncorrecto = String.Empty;
 
         public TramaNE()
         {
@@ -23,24 +24,25 @@ namespace Negocio
             _util = _util ?? new Util();
             _tramaRE = _tramaRE ?? new TramaRE();
             TramaNE.esProcesado = true;
+            _carpetaOrigen = ConfigurationManager.AppSettings[Constante.CARPETA_ORIGEN] ?? String.Empty;
+            _carpetaCorrecto = ConfigurationManager.AppSettings[Constante.CARPETA_CORRECTO] ?? String.Empty;
+            _carpetaIncorrecto = ConfigurationManager.AppSettings[Constante.CARPETA_INCORRECTO] ?? String.Empty;
         }
 
         public async Task<RespuestaMO> ProcesarTrama(CancellationToken cancelToken)
         {
             RespuestaMO respuestaMO = new RespuestaMO();
             Int32 contador = 0;
-            String rutaOrigen = String.Empty;
-            String nombreArchivo = String.Empty;
+            String rutaOrigen = String.Empty, nombreArchivo = String.Empty;
             try
             {
-                String carpetaOrigen = ConfigurationManager.AppSettings[Constante.CARPETA_ORIGEN] ?? String.Empty;
-                String[] listaArchivosPendientes = Directory.GetFiles(carpetaOrigen, Constante.PATRON_TXT, SearchOption.TopDirectoryOnly);
+                String[] listaArchivosPendientes = Directory.GetFiles(_carpetaOrigen, Constante.PATRON_TXT, SearchOption.TopDirectoryOnly);
                 if (listaArchivosPendientes.Length == Constante._0)
                 {
-                    String MENSAJE_CARPETA_ORIGEN_VACIA = String.Format("{0} | {1}", Constante.MENSAJE_CARPETA_ORIGEN_VACIA, carpetaOrigen);
-                    await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, MENSAJE_CARPETA_ORIGEN_VACIA);
+                    String mensaje = String.Format("{0} | {1}", Constante.MENSAJE_CARPETA_ORIGEN_VACIA, _carpetaOrigen);
+                    await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, String.Empty, mensaje);
                     respuestaMO.Codigo = Constante.CODIGO_OK;
-                    respuestaMO.Mensaje = MENSAJE_CARPETA_ORIGEN_VACIA;
+                    respuestaMO.Mensaje = mensaje;
                     TramaNE.esProcesado = true;
                 }
                 else
@@ -48,26 +50,41 @@ namespace Negocio
                     foreach (String archivo in listaArchivosPendientes)
                     {
                         rutaOrigen = archivo;
-                        String nombreArchivoConExtension = archivo.Substring(archivo.LastIndexOf(Constante.BACK_SLASH) + 1);
-                        String nombreArchivoSinExtension = nombreArchivoConExtension.Split(Constante.DOT)[Constante._0];
-                        String parametros = nombreArchivoSinExtension.Substring(nombreArchivoSinExtension.IndexOf(Constante.AMPERSON) + 1);
-                        TramaMO tramaMO = await MapearCadenaAModelo(cancelToken, nombreArchivoConExtension, archivo, Constante.CARPETA_CORRECTO, parametros);
-                        nombreArchivo = tramaMO.NombreArchivo;
-                        StringBuilder stringBuilder = await _util.ConvertirCadenaAXml(cancelToken, archivo);
+                        String mensajeValidacion = _util.ValidarNombreArchivo(archivo, out nombreArchivo);
+                        respuestaMO.NombreArchivo = nombreArchivo;
 
-                        if (stringBuilder.ToString() != String.Empty)
+                        if (mensajeValidacion != String.Empty)
                         {
-                            respuestaMO = await _tramaRE.ProcesarTramaAsync(cancelToken, tramaMO, stringBuilder.ToString());
-                            Boolean esMovido = false;
+                            await _util.MoverArchivos(cancelToken, archivo, _carpetaIncorrecto, nombreArchivo);
+                            await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, nombreArchivo, mensajeValidacion);
+                        }
+                        else
+                        {
+                            String nombreArchivoConExtension = archivo.Substring(archivo.LastIndexOf(Constante.BACK_SLASH) + 1);
+                            String nombreArchivoSinExtension = nombreArchivoConExtension.Split(Constante.DOT)[Constante._0];
+                            String parametros = nombreArchivoSinExtension.Substring(nombreArchivoSinExtension.IndexOf(Constante.AMPERSON) + 1);
+                            nombreArchivoConExtension = String.Format("{0}{1}", nombreArchivoSinExtension.Split(Constante.AMPERSON)[Constante._0], Constante.EXTENSION_TXT);
+                            TramaMO tramaMO = MapearCadenaHaciaModelo(nombreArchivoConExtension, archivo, parametros);
+                            String cadenaXml = await _util.ConvertirCadenaHaciaXml(cancelToken, archivo, nombreArchivo);
 
-                            if (respuestaMO != null && respuestaMO.Codigo == Constante.CODIGO_OK)
+                            if (cadenaXml != String.Empty)
                             {
-                                esMovido = await _util.MoverArchivos(cancelToken, archivo, Constante.CARPETA_CORRECTO, tramaMO.NombreArchivo);
-                            }
+                                RespuestaMO respuestaMO2 = await _tramaRE.ProcesarTramaAsync(cancelToken, tramaMO, cadenaXml, nombreArchivo);
+                                Boolean esMovido = false;
 
-                            String mensaje = esMovido == true ? Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_OK : Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK;
-                            mensaje = String.Format("{0} | {1}", mensaje, tramaMO.NombreArchivo);
-                            await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, mensaje);
+                                if (respuestaMO2 != null && respuestaMO2.Codigo == Constante.CODIGO_OK)
+                                {
+                                    esMovido = await _util.MoverArchivos(cancelToken, archivo, _carpetaCorrecto, nombreArchivo);
+                                }
+                                else
+                                {
+                                    respuestaMO.Mensaje = respuestaMO2.Mensaje;
+                                }
+
+                                String mensaje = esMovido == true ? Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_OK : Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK;
+                                mensaje = String.Format("{0} | {1}", mensaje, tramaMO.NombreArchivo);
+                                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, nombreArchivo, mensaje);
+                            }
                         }
 
                         contador++;
@@ -82,23 +99,21 @@ namespace Negocio
             catch (Exception e)
             {
                 TramaNE.esProcesado = true;
-                Boolean esMovido = await _util.MoverArchivos(cancelToken, rutaOrigen, Constante.CARPETA_INCORRECTO, nombreArchivo);
-                String mensaje = e.Message;
-                mensaje = String.Format("{0} | {1}", mensaje, nombreArchivo);
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK, mensaje);
+                await _util.MoverArchivos(cancelToken, rutaOrigen, _carpetaIncorrecto, nombreArchivo);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, nombreArchivo, Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK, e.Message);
                 respuestaMO.Codigo = Constante.CODIGO_ERROR;
-                respuestaMO.Mensaje = mensaje;
-                throw e;
+                respuestaMO.Mensaje = String.Format("{0} | {1}", nombreArchivo, e.Message);
             }
             return respuestaMO;
         }
 
-        private async Task<TramaMO> MapearCadenaAModelo(CancellationToken cancelToken, String nombreArchivo, String rutaArchivo, String carpeta, String cadenaParametros)
+        private TramaMO MapearCadenaHaciaModelo(String nombreArchivo, String rutaArchivo, String cadenaParametros)
         {
-            TramaMO tramaMO = new TramaMO();
+            TramaMO tramaMO = null;
             try
             {
-                String carpetaDestino = ConfigurationManager.AppSettings[carpeta];
+                tramaMO = new TramaMO();
+                String carpetaDestino = ConfigurationManager.AppSettings[Constante.CARPETA_CORRECTO];
                 String[] parametros = cadenaParametros.Split(Constante.AMPERSON);
                 tramaMO.IdBanco = parametros[Constante._0];
                 tramaMO.Usuario = parametros[Constante._1];
@@ -107,17 +122,13 @@ namespace Negocio
                 tramaMO.IdSap = parametros[Constante._4];
                 tramaMO.Anio = parametros[Constante._5];
                 tramaMO.MomentoOrden = parametros[Constante._6];
-                tramaMO.NombreArchivo = String.Format("{0}{1}", nombreArchivo.Split(Constante.AMPERSON)[Constante._0], Constante.EXTENSION_TXT);
+                tramaMO.Propietario = parametros[Constante._7];
+                tramaMO.NombreArchivo = nombreArchivo;
                 tramaMO.RutaArchivo = String.Format("{0}{1}", carpetaDestino, tramaMO.NombreArchivo);
                 tramaMO.Parametros = cadenaParametros;
-
-                String mensaje = cadenaParametros != String.Empty ? Constante.MENSAJE_MAPEAR_CADENA_A_MODELO_OK : Constante.MENSAJE_MAPEAR_CADENA_A_MODELO_NO_OK;
-                mensaje = String.Format("{0} | {1}", mensaje, cadenaParametros);
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_MAPEAR_CADENA_A_MODELO, mensaje);
             }
             catch (Exception e)
             {
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_MAPEAR_CADENA_A_MODELO, Constante.MENSAJE_MAPEAR_CADENA_A_MODELO_NO_OK, e.Message);
                 throw e;
             }
             return tramaMO;

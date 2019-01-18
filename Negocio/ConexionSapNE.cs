@@ -19,7 +19,7 @@ namespace Negocio
             _conexionSap = _conexionSap ?? new ConexionSap();
         }
 
-        public async Task<RespuestaMO> EnviarEstadoProcesoHostToHostAsync(CancellationToken cancelToken, String idSociedad, String anio, String momentoOrden, String idEstadoOrden, String idSap, String usuario)
+        public async Task<RespuestaMO> EnviarEstadoProcesoHostToHostAsync(CancellationToken cancelToken, String idSociedad, String anio, String momentoOrden, String idEstadoOrden, String idSap, String usuario, String nombreArchivo)
         {
             RespuestaMO respuestaMO = null;
             try
@@ -40,11 +40,11 @@ namespace Negocio
                 IRfcStructure rfcStructureReturn = rfcFunction.GetStructure(Constante.EW_MENSG);
                 respuestaMO = MapearEstructuraAModeloAsync(rfcStructureReturn);
                 String mensaje = respuestaMO.IdRespuesta == Constante.TYPE_SUCCESS ? Constante.MENSAJE_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC_OK : Constante.MENSAJE_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC_NO_OK;
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_CONEXION_SAP_NE, Constante.METODO_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC, mensaje);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_CONEXION_SAP_NE, Constante.METODO_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC, nombreArchivo, mensaje);
             }
             catch (Exception e)
             {
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_NEGOCIO, Constante.CLASE_CONEXION_SAP_NE, Constante.METODO_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC, Constante.MENSAJE_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_NEGOCIO, Constante.CLASE_CONEXION_SAP_NE, Constante.METODO_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC, nombreArchivo, Constante.MENSAJE_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC_NO_OK, e.Message);
                 throw e;
             }
             finally

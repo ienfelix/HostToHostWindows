@@ -11,6 +11,7 @@ namespace Modelo
         public String IdSap { get; set; }
         public String Anio { get; set; }
         public String MomentoOrden { get; set; }
+        public String Propietario { get; set; }
         public String NombreArchivo { get; set; }
         public String RutaArchivo { get; set; }
         public String Parametros { get; set; }

@@ -62,13 +62,13 @@ namespace Repositorio
                         _reader.Close();
                         _con.Close();
                         String mensaje = respuestaMO.Codigo == Constante.CODIGO_OK ? Constante.MENSAJE_PROCESAR_RESPUESTA_ASYNC_OK : Constante.MENSAJE_PROCESAR_RESPUESTA_ASYNC_NO_OK;
-                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_RESPUESTA_RE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, mensaje);
+                        await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_RESPUESTA_RE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, nombreArchivo, mensaje);
                     }
                 }
             }
             catch (Exception e)
             {
-                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_RESPUESTA_RE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, Constante.MENSAJE_PROCESAR_RESPUESTA_ASYNC_NO_OK, e.Message);
+                await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_ERROR, Constante.PROYECTO_REPOSITORIO, Constante.CLASE_RESPUESTA_RE, Constante.METODO_PROCESAR_RESPUESTA_ASYNC, nombreArchivo, Constante.MENSAJE_PROCESAR_RESPUESTA_ASYNC_NO_OK, e.Message);
                 throw e;
             }
             return respuestaMO;
