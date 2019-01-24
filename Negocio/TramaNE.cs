@@ -92,6 +92,7 @@ namespace Negocio
 
                     if (contador == listaArchivosPendientes.Length)
                     {
+                        respuestaMO.Mensaje = String.Format("{0} | {1}", Constante.MENSAJE_PROCESAR_TRAMAS_ASYNC_OK, contador);
                         TramaNE.esProcesado = true;
                     }
                 }

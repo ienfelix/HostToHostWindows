@@ -19,7 +19,7 @@ namespace Repositorio
         public TramaRE()
         {
             _bitacora = _bitacora ?? new Bitacora();
-            _conexion = ConfigurationManager.ConnectionStrings[Constante.CONEXION_DESARROLLO].ConnectionString;
+            _conexion = ConfigurationManager.ConnectionStrings[Constante.CONEXION_PRODUCCION].ConnectionString;
         }
 
         public async Task<RespuestaMO> ProcesarTramaAsync(CancellationToken cancelToken, TramaMO tramaMO, String tramaDetalle, String nombreArchivo)

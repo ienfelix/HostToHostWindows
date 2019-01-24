@@ -54,6 +54,7 @@ namespace Comun
         public static String MENSAJE_ON_TIMER_RESPUESTA_ASYNC_NO_OK = "No se procesó la respuesta.";
         public static String MENSAJE_PROCESAR_TRAMA_ASYNC_OK = "Se procesó satisfactoriamente la trama.";
         public static String MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK = "No se procesó la trama.";
+        public static String MENSAJE_PROCESAR_TRAMAS_ASYNC_OK = "Se procesó satisfactoriamente las tramas de los archivos.";
         public static String MENSAJE_CARPETA_ORIGEN_VACIA = "No hay documentos pendientes de traducir en la carpeta de origen.";
         public static String MENSAJE_PARAMETROS_NO_PRESENTES = "Parametros no presentes en el nombre del archivo.";
         public static String MENSAJE_CONVERTIR_CADENA_HACIA_XML_OK = "Se convirtió satisfactoriamente la cadena a xml.";
@@ -66,6 +67,7 @@ namespace Comun
         public static String MENSAJE_CREAR_CARPETAS_LOCALES_NO_OK = "No se creó las carpetas locales.";
         public static String MENSAJE_PROCESAR_RESPUESTA_ASYNC_OK = "Se procesó satisfactoriamente la respuesta.";
         public static String MENSAJE_PROCESAR_RESPUESTA_ASYNC_NO_OK = "Se procesó satisfactoriamente la respuesta.";
+        public static String MENSAJE_PROCESAR_RESPUESTAS_ASYNC_OK = "Se procesó satisfactoriamente las descargas y las respuestas de los archivos.";
         public static String MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_OK = "Se desencriptó satisfactoriamente el archivo.";
         public static String MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_NO_OK = "No se desencriptó el archivo.";
         public static String MENSAJE_ALMACENAR_ARCHIVO_ASYNC_OK = "Se almacenó satisfactoriamente los datos del archivo.";

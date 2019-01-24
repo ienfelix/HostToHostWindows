@@ -24,9 +24,9 @@ namespace Negocio
             RespuestaMO respuestaMO = null;
             try
             {
-                DateTime? fecha = ConvertirCadenaFechaAsync(momentoOrden);
+                DateTime? fecha = ConvertirCadenaHaciaFecha(momentoOrden);
                 RfcDestinationManager.RegisterDestinationConfiguration(_conexionSap);
-                RfcConfigParameters rfcConfigParameters = GetParametersAsync();
+                RfcConfigParameters rfcConfigParameters = GetParameters();
                 RfcDestination rfcDestination = RfcDestinationManager.GetDestination(rfcConfigParameters[RfcConfigParameters.Name]);
                 RfcRepository rfcRepository = rfcDestination.Repository;
                 IRfcFunction rfcFunction = rfcRepository.CreateFunction(Constante.FUNCTION_YFIRFC_ACTSTS_H2H);
@@ -38,7 +38,7 @@ namespace Negocio
                 rfcFunction.SetValue(Constante.IP_USNAM, usuario);
                 rfcFunction.Invoke(rfcDestination);
                 IRfcStructure rfcStructureReturn = rfcFunction.GetStructure(Constante.EW_MENSG);
-                respuestaMO = MapearEstructuraAModeloAsync(rfcStructureReturn);
+                respuestaMO = MapearEstructuraHaciaModelo(rfcStructureReturn);
                 String mensaje = respuestaMO.IdRespuesta == Constante.TYPE_SUCCESS ? Constante.MENSAJE_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC_OK : Constante.MENSAJE_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC_NO_OK;
                 await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_CONEXION_SAP_NE, Constante.METODO_ENVIAR_ESTADO_PROCESO_HOSTTOHOST_ASYNC, nombreArchivo, mensaje);
             }
@@ -54,7 +54,7 @@ namespace Negocio
             return respuestaMO;
         }
 
-        public RfcConfigParameters GetParametersAsync()
+        public RfcConfigParameters GetParameters()
         {
             RfcConfigParameters rfcConfigParameters = new RfcConfigParameters();
             try
@@ -86,7 +86,7 @@ namespace Negocio
             return rfcConfigParameters;
         }
 
-        private RespuestaMO MapearEstructuraAModeloAsync(IRfcStructure rfcStructureReturn)
+        private RespuestaMO MapearEstructuraHaciaModelo(IRfcStructure rfcStructureReturn)
         {
             RespuestaMO respuestaMO = respuestaMO = new RespuestaMO();
             try
@@ -106,7 +106,7 @@ namespace Negocio
             return respuestaMO;
         }
 
-        private DateTime? ConvertirCadenaFechaAsync(String momentoOrden)
+        private DateTime? ConvertirCadenaHaciaFecha(String momentoOrden)
         {
             DateTime? fecha = null;
             try

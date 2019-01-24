@@ -164,9 +164,9 @@ namespace Negocio
 
                             if (cadenaXml != String.Empty)
                             {
-                                respuestaMO = await _respuestaRE.ProcesarRespuestaAsync(cancelToken, nombreArchivo, cadenaXml);
+                                RespuestaMO respuestaMO2 = await _respuestaRE.ProcesarRespuestaAsync(cancelToken, nombreArchivo, cadenaXml);
 
-                                if (respuestaMO != null && respuestaMO.Codigo == Constante.CODIGO_OK)
+                                if (respuestaMO2 != null && respuestaMO2.Codigo == Constante.CODIGO_OK)
                                 {
                                     String rutaRespaldo = String.Format("{0}{1}", _carpetaRespaldo, nombreArchivo);
 
@@ -178,7 +178,7 @@ namespace Negocio
                                     File.Move(rutaArchivo, rutaRespaldo);
                                     esAlmacenado = true;
                                     esConforme = true;
-                                    await _conexionSapNE.EnviarEstadoProcesoHostToHostAsync(cancelToken, respuestaMO.IdSociedad, respuestaMO.Anio, respuestaMO.MomentoOrden, respuestaMO.IdEstadoOrden, respuestaMO.IdSap, respuestaMO.Usuario, nombreArchivo);
+                                    await _conexionSapNE.EnviarEstadoProcesoHostToHostAsync(cancelToken, respuestaMO2.IdSociedad, respuestaMO2.Anio, respuestaMO2.MomentoOrden, respuestaMO2.IdEstadoOrden, respuestaMO2.IdSap, respuestaMO2.Usuario, nombreArchivo);
                                 }
 
                                 String mensajeDesencriptado = esDesencriptado ? Constante.MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_OK : Constante.MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_NO_OK;
@@ -193,6 +193,7 @@ namespace Negocio
 
                     if (contador == listaNombreArchivos.Count())
                     {
+                        respuestaMO.Mensaje = String.Format("{0} | {1}", Constante.MENSAJE_PROCESAR_RESPUESTAS_ASYNC_OK, contador);
                         RespuestaNE.esProcesado = true;
                     }
                 }
