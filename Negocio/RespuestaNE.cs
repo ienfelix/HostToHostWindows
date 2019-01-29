@@ -178,7 +178,7 @@ namespace Negocio
                                     File.Move(rutaArchivo, rutaRespaldo);
                                     esAlmacenado = true;
                                     esConforme = true;
-                                    await _conexionSapNE.EnviarEstadoProcesoHostToHostAsync(cancelToken, respuestaMO2.IdSociedad, respuestaMO2.Anio, respuestaMO2.MomentoOrden, respuestaMO2.IdEstadoOrden, respuestaMO2.IdSap, respuestaMO2.Usuario, nombreArchivo);
+                                    await _conexionSapNE.EnviarEstadoProcesoHostToHostAsync(cancelToken, respuestaMO2.IdSociedad, respuestaMO2.Anio, respuestaMO2.MomentoOrden, respuestaMO2.IdEstadoOrden, respuestaMO2.IdSap, respuestaMO2.Usuario, respuestaMO2.TipoOrden, nombreArchivo);
                                 }
 
                                 String mensajeDesencriptado = esDesencriptado ? Constante.MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_OK : Constante.MENSAJE_DESENCRIPTAR_ARCHIVO_ASYNC_NO_OK;

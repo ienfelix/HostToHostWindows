@@ -11,6 +11,7 @@ namespace Modelo
         public String Anio { get; set; }
         public String MomentoOrden { get; set; }
         public String IdEstadoOrden { get; set; }
+        public String TipoOrden { get; set; }
         public String Usuario { get; set; }
         public String IdRespuesta { get; set; }
         public String Respuesta { get; set; }

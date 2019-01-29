@@ -55,7 +55,8 @@ namespace Repositorio
                                 respuestaMO.Anio = _reader.IsDBNull(Constante._4) ? String.Empty : _reader.GetString(Constante._4);
                                 respuestaMO.MomentoOrden = _reader.IsDBNull(Constante._5) ? String.Empty : _reader.GetString(Constante._5);
                                 respuestaMO.IdEstadoOrden = _reader.IsDBNull(Constante._6) ? String.Empty : _reader.GetString(Constante._6);
-                                respuestaMO.Usuario = _reader.IsDBNull(Constante._7) ? String.Empty : _reader.GetString(Constante._7);
+                                respuestaMO.TipoOrden = _reader.IsDBNull(Constante._7) ? String.Empty : _reader.GetString(Constante._7);
+                                respuestaMO.Usuario = _reader.IsDBNull(Constante._8) ? String.Empty : _reader.GetString(Constante._8);
                             }
                         }
 
