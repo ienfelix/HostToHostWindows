@@ -79,10 +79,15 @@ namespace Negocio
                                 else
                                 {
                                     respuestaMO.Mensaje = respuestaMO2.Mensaje;
+
+                                    if (respuestaMO2.Codigo == Constante.CODIGO_ERROR)
+                                    {
+                                        await _util.MoverArchivos(cancelToken, archivo, _carpetaIncorrecto, nombreArchivo);
+                                    }
                                 }
 
                                 String mensaje = esMovido == true ? Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_OK : Constante.MENSAJE_PROCESAR_TRAMA_ASYNC_NO_OK;
-                                mensaje = String.Format("{0} | {1}", mensaje, tramaMO.NombreArchivo);
+                                mensaje = String.Format("{0} | {1}", mensaje, respuestaMO2.Mensaje);
                                 await _bitacora.RegistrarEventoAsync(cancelToken, Constante.BITACORA_NOTIFICACION, Constante.PROYECTO_NEGOCIO, Constante.CLASE_TRAMA_NE, Constante.METODO_PROCESAR_TRAMA_ASYNC, nombreArchivo, mensaje);
                             }
                         }
